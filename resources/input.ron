@@ -1,0 +1,9 @@
+(
+  axes: {
+    Vertical: Emulated(pos: Key(W), neg: Key(S)),
+    Horizontal: Emulated(pos: Key(A), neg: Key(D)),
+  },
+  actions: {
+    Fire: [ [ Key(Space) ] ],
+  }
+)

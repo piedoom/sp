@@ -1,0 +1,12 @@
+    
+#![enable(implicit_some)]
+Prefab (
+    entities: [
+        (
+            data: (
+                name: Named(name: "default"),
+                gltf: File("models/ship.gltf", ()),
+            ),
+        ),
+    ],
+)
