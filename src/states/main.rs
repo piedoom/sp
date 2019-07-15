@@ -1,6 +1,7 @@
 use amethyst;
 
 use amethyst::{
+    assets::{Handle, Prefab},
     core::{transform::Transform},
     ecs::*,
     prelude::*,
@@ -9,6 +10,8 @@ use amethyst::{
     },
     window::ScreenDimensions,
 };
+
+use crate::resources::prefabs::CharacterPrefabs;
 
 pub struct MainGameState {
     dispatcher: Dispatcher<'static, 'static>,
@@ -35,7 +38,7 @@ impl SimpleState for MainGameState {
         };
 
         let mut transform = Transform::default();
-        transform.set_translation_xyz(0.0, 0.0, 12.0);
+        transform.set_translation_xyz(0.0, 0.0, 10.0);
         self.camera = Some(
             data.world
                 .create_entity()
@@ -49,6 +52,11 @@ impl SimpleState for MainGameState {
                 .with(transform)
                 .build(),
         );
+        let character = get_character_prefab(data.world, "default");
+        data.world.create_entity()
+            .with(character.clone())
+            .with(Transform::default())
+            .build();
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
@@ -56,4 +64,13 @@ impl SimpleState for MainGameState {
         data.data.update(&data.world);
         Trans::None
     }
+}
+
+pub fn get_character_prefab(world: &mut World, key: &str) -> Handle<Prefab<crate::components::characters::CharacterPrefabData>> {
+    world.exec(|prefab_store: ReadExpect<CharacterPrefabs>| {
+        prefab_store
+            .get_prefab(key)
+            .expect(&format!("Getting prefab with key {} failed.", key))
+            .clone()
+    })
 }

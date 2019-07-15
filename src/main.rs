@@ -1,14 +1,18 @@
 use amethyst::assets::PrefabLoaderSystem;
 use amethyst::{
+    gltf::GltfSceneLoaderSystem,
     core::frame_limiter::FrameRateLimitStrategy,
     core::transform::TransformBundle,
     input::InputBundle,
     prelude::*,
-    renderer::{types::DefaultBackend, RenderingSystem},
+    renderer::{ 
+        types::DefaultBackend, 
+        RenderingSystem,
+        visibility::VisibilitySortingSystem,
+    }, 
     utils::application_root_dir,
     window::{DisplayConfig, WindowBundle},
 };
-
 
 mod components;
 mod render_graph;
@@ -32,22 +36,30 @@ fn main() -> amethyst::Result<()> {
     let display_config_path = resources.clone() + "/display_config.ron";
     let key_bindings_path = resources.clone() + "/input.ron";
 
-    let display_config = DisplayConfig::load(display_config_path);
-
     // The global game data. Here we register all systems and bundles that will run for every game state. The game states
     // will define additional dispatchers for state specific systems. Note that the dispatchers will run in sequence,
     // so this setup sacrifices performance for modularity (for now).
     let game_data = GameDataBuilder::default()
+        .with_bundle(WindowBundle::from_config_path(display_config_path))?
         .with_bundle(
             InputBundle::<GameBindings>::new().with_bindings_from_file(&key_bindings_path)?,
         )?
+        .with_bundle(TransformBundle::new())?
         .with(
             PrefabLoaderSystem::<c::characters::CharacterPrefabData>::default(),
-            "",
+            "character_prefab_loader",
             &[],
         )
-        .with_bundle(TransformBundle::new())?
-        .with_bundle(WindowBundle::from_config(display_config))?
+        .with(
+            VisibilitySortingSystem::new(),
+            "visibility_system",
+            &["transform_system"],
+        )
+        .with(
+            GltfSceneLoaderSystem::default(),
+            "gltf_loader",
+            &["character_prefab_loader"], // This is important so that entity instantiation is performed in a single frame.
+        )
         .with_thread_local(RenderingSystem::<DefaultBackend, _>::new(
             RenderGraph::default(),
         ));
