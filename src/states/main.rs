@@ -12,6 +12,8 @@ use amethyst::{
 };
 
 use crate::resources::prefabs::CharacterPrefabs;
+use crate::components::*;
+use crate::systems::*;
 
 pub struct MainGameState {
     dispatcher: Dispatcher<'static, 'static>,
@@ -21,7 +23,10 @@ pub struct MainGameState {
 impl MainGameState {
     pub fn new(_world: &mut World) -> Self {
         MainGameState {
-            dispatcher: DispatcherBuilder::new().build(),
+            dispatcher: DispatcherBuilder::new()
+            .with(InputSystem::default(), "input_system", &[])
+            .with(ThrusterSystem::default(), "thruster_system", &[])
+            .build(),
             camera: None,
         }
     }
@@ -38,7 +43,8 @@ impl SimpleState for MainGameState {
         };
 
         let mut transform = Transform::default();
-        transform.set_translation_xyz(0.0, 0.0, 10.0);
+        transform.set_translation_xyz(0.0, 10.0, 0.0);
+        transform.set_rotation_euler(-1.5707963, 0.0, 0.0);
         self.camera = Some(
             data.world
                 .create_entity()
@@ -56,6 +62,8 @@ impl SimpleState for MainGameState {
         data.world.create_entity()
             .with(character.clone())
             .with(Transform::default())
+            .with(Thruster::default())
+            .with(Player::default())
             .build();
     }
 

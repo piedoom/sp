@@ -19,10 +19,12 @@ mod render_graph;
 mod resources;
 mod states;
 mod util;
+mod systems;
 
 use crate::components as c;
 use crate::render_graph::RenderGraph;
 use crate::util::GameBindings;
+use crate::systems::*;
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

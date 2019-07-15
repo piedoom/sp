@@ -1,3 +1,3 @@
 mod input;
 
-pub use input::GameBindings;
+pub use input::*;
