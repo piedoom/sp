@@ -7,6 +7,7 @@ use amethyst::{
     gltf::{GltfSceneAsset, GltfSceneFormat},
 };
 
+use crate::components::*;
 use serde::{Deserialize, Serialize};
 
 // This is the main prefab data for characters.
@@ -16,4 +17,5 @@ use serde::{Deserialize, Serialize};
 pub struct CharacterPrefabData {
     pub name: Option<Named>,
     gltf: Option<AssetPrefab<GltfSceneAsset, GltfSceneFormat>>,
+    thruster: Option<Thruster>,
 }

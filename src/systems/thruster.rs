@@ -16,7 +16,7 @@ impl<'a> System<'a> for ThrusterSystem {
     fn run(&mut self, (mut thrusters, mut transforms, time): Self::SystemData) {
         for (thruster, transform) in (&mut thrusters, &mut transforms).join() {
             // rotate based on unit points
-            transform.append_rotation_z_axis(
+            transform.append_rotation_y_axis(
                 // This will orient the rotation direction correctly
                 thruster.rotation_control *
                 // Multiply by our turn speed, which is just a multiplier.
@@ -28,7 +28,7 @@ impl<'a> System<'a> for ThrusterSystem {
             // If our input is 0, we're not changing our velocity.
             if thruster.thrust_control != 0. {
                 // Calculate impulse
-                let added_magnitude = Vector3::y().scale(
+                let added_magnitude = Vector3::z().scale(
                     thruster.traction
                         * time.delta_seconds()
                         * thruster.thrust_control,

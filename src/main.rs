@@ -11,20 +11,19 @@ use amethyst::{
         visibility::VisibilitySortingSystem,
     }, 
     utils::application_root_dir,
-    window::{DisplayConfig, WindowBundle},
+    window::WindowBundle,
 };
 
 mod components;
-mod render_graph;
+mod rendering;
 mod resources;
 mod states;
 mod util;
 mod systems;
 
-use crate::components as c;
-use crate::render_graph::RenderGraph;
-use crate::util::GameBindings;
-use crate::systems::*;
+use components as c;
+use util::GameBindings;
+use rendering::RenderGraph;
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

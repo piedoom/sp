@@ -1,9 +1,6 @@
 use amethyst::{
     assets::PrefabData,
-    core::{
-        math::{Unit, Vector3, UnitQuaternion, self as na, Isometry, Matrix4, Quaternion, RealField, Translation3, Rotation3},
-        Transform,
-    },
+    core::math::{Unit, Vector3},
     derive::PrefabData,
     ecs::{Component, DenseVecStorage, Entity, WriteStorage},
     error::Error,

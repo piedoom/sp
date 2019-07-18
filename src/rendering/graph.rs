@@ -3,7 +3,7 @@ use amethyst::{
     renderer::{
         palette::Srgb,
         pass::{
-            DrawDebugLinesDesc, DrawFlat2DDesc, DrawFlat2DTransparentDesc, DrawPbrDesc,
+            DrawDebugLinesDesc, DrawPbrDesc,
             DrawPbrTransparentDesc, DrawSkyboxDesc,
         },
         rendy::{
@@ -24,8 +24,6 @@ use amethyst::{
     },
     window::{ScreenDimensions, Window},
 };
-
-use std::sync::Arc;
 
 #[derive(Default)]
 pub struct RenderGraph {

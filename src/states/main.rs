@@ -2,7 +2,9 @@ use amethyst;
 
 use amethyst::{
     assets::{Handle, Prefab},
-    core::{transform::Transform},
+    core::{
+        transform::Transform,
+    },
     ecs::*,
     prelude::*,
     renderer::{
@@ -26,6 +28,7 @@ impl MainGameState {
             dispatcher: DispatcherBuilder::new()
             .with(InputSystem::default(), "input_system", &[])
             .with(ThrusterSystem::default(), "thruster_system", &[])
+            .with(TrackerSystem::default(), "tracker_system", &[])
             .build(),
             camera: None,
         }
@@ -42,8 +45,15 @@ impl SimpleState for MainGameState {
             (dim.width(), dim.height())
         };
 
+        let character_prefab = get_character_prefab(data.world, "default");
+        let character = data.world.create_entity()
+            .with(character_prefab.clone())
+            .with(Transform::default())
+            .with(Player::default())
+            .build();
+
         let mut transform = Transform::default();
-        transform.set_translation_xyz(0.0, 10.0, 0.0);
+        transform.set_translation_xyz(0.0, 30.0, 0.0);
         transform.set_rotation_euler(-1.5707963, 0.0, 0.0);
         self.camera = Some(
             data.world
@@ -56,15 +66,9 @@ impl SimpleState for MainGameState {
                     1000.0f32,
                 )))
                 .with(transform)
+                .with(Tracker::new(character))
                 .build(),
         );
-        let character = get_character_prefab(data.world, "default");
-        data.world.create_entity()
-            .with(character.clone())
-            .with(Transform::default())
-            .with(Thruster::default())
-            .with(Player::default())
-            .build();
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {

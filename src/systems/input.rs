@@ -1,7 +1,6 @@
 use crate::components::{Thruster, Player};
 use crate::util::{GameBindings, Axis};
 use amethyst::ecs::{Join, Read, System, WriteStorage};
-use amethyst::input::BindingTypes;
 use amethyst::input::InputHandler;
 
 #[derive(Default, Debug)]
