@@ -27,8 +27,9 @@ impl MainGameState {
         MainGameState {
             dispatcher: DispatcherBuilder::new()
             .with(InputSystem::default(), "input_system", &[])
-            .with(ThrusterSystem::default(), "thruster_system", &[])
             .with(TrackerSystem::default(), "tracker_system", &[])
+            .with(PhysicsSystem::default(), "physics_system", &[])
+            .with(ThrusterSystem::default(), "thruster_system", &["physics_system"])
             .build(),
             camera: None,
         }
@@ -49,6 +50,8 @@ impl SimpleState for MainGameState {
         let character = data.world.create_entity()
             .with(character_prefab.clone())
             .with(Transform::default())
+            .with(Thruster::default())
+            .with(Body::default())
             .with(Player::default())
             .build();
 

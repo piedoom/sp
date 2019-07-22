@@ -5,7 +5,7 @@ authors = []
 edition = "2018"
 
 [dependencies]
-amethyst = { git = "https://github.com/kabergstrom/amethyst", features = ["nightly", "vulkan", "gltf"], branch = "new-asset-system" }
+amethyst = { git = "https://github.com/kabergstrom/amethyst", features = ["nightly", "metal", "gltf"], branch = "new-asset-system" }
 serde = "*"
 
 [features]

@@ -6,11 +6,6 @@ Prefab (
             data: (
                 name: Named(name: "default"),
                 gltf: File("models/ship.gltf", ()),
-                thruster: Thruster(
-                    turn_speed: 3.0,
-                    max_speed: 100.0,
-                    traction: 20.0,
-                )
             ),
         ),
     ],
