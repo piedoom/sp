@@ -16,16 +16,17 @@ impl<'a> System<'a> for ThrusterSystem {
 
     fn run(&mut self, (mut bodies, mut thrusters, mut transforms, time): Self::SystemData) {
         for (body, thruster, transform) in (&mut bodies, &mut thrusters, &mut transforms).join() {
-            // body.
-            // rotate based on unit points
-            // transform.append_rotation_y_axis(
-            //     // This will orient the rotation direction correctly
-            //     thruster.rotation_control *
-            //     // Multiply by our angular acceleration, which is just a multiplier.
-            //     thruster.rotational_force *
-            //     // Finally, multiply everything by our delta to keep consistent across framerates
-            //     time.delta_seconds(),
-            // );
+
+            if thruster.rotation_control != 0. {
+                body.apply_torque(
+                    // This will orient the rotation direction correctly
+                    thruster.rotation_control *
+                    // Multiply by our angular acceleration, which is just a multiplier.
+                    thruster.rotational_force *
+                    // Finally, multiply everything by our delta to keep consistent across framerates
+                    time.delta_seconds(),
+                );
+            }
 
             // If we have no input, we're not changing anything
             if thruster.thrust_control != 0. {

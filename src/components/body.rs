@@ -13,11 +13,12 @@ use amethyst::{
     ecs::prelude::*,
 };
 
+#[derive(Debug)]
 pub struct Body {
     velocity: Vector3<f32>,
     acceleration: Vector3<f32>,
     angular_velocity: f32,
-    angular_acceleration: Vector3<f32>,
+    angular_acceleration: f32,
     max_angular_velocity: Option<f32>,
     max_velocity: Option<f32>,
 }
@@ -32,7 +33,7 @@ impl Body {
     pub fn acceleration(&self) -> Vector3<f32> {
         self.acceleration
     }
-    pub fn angular_acceleration(&self) -> Vector3<f32> {
+    pub fn angular_acceleration(&self) -> f32 {
         self.angular_acceleration
     }
     pub fn set_velocity(&mut self, velocity: Vector3<f32>) -> &Self {
@@ -53,19 +54,19 @@ impl Body {
     pub fn new(transform: &Transform) -> Self {
         Self::default()
     }
-    /// Update position and rotation according to deltatime. This is called in our `PhysicsSystem`
-    pub fn update(&mut self, delta_seconds: f32) -> &Self {
-        // Calculate our positional and rotational velocity based on the time step
-        self.velocity = self.velocity + (self.acceleration * delta_seconds);
-        //self.angular_velocity = self.angular_velocity + (self.angular_acceleration * delta_seconds);
-        self
-    }
     pub fn apply_force(&mut self, force: Vector3<f32>) -> &Self {
         self.acceleration += force;
         self
     }
-    pub fn apply_rotational_force_2d(&mut self, force: Vector3<f32>) -> &Self {
-        self.angular_acceleration = self.angular_acceleration + force;
+    pub fn apply_torque(&mut self, force: f32) -> &Self {
+        self.angular_acceleration += force;
+        self
+    }
+    /// Update position and rotation according to deltatime. This is called in our `PhysicsSystem`
+    pub fn update(&mut self, delta_seconds: f32) -> &Self {
+        // Calculate our positional and rotational velocity based on the time step
+        self.velocity = self.velocity + (self.acceleration * delta_seconds);
+        self.angular_velocity = self.angular_velocity + (self.angular_acceleration * delta_seconds);
         self
     }
 }
@@ -76,7 +77,7 @@ impl Default for Body {
             velocity: Vector3::zeros(),
             acceleration: Vector3::zeros(),
             angular_velocity: 0f32,
-            angular_acceleration: Vector3::zeros(),
+            angular_acceleration: 0f32,
             max_angular_velocity: None,
             max_velocity: None,
         }

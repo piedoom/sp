@@ -19,12 +19,5 @@ impl<'a> System<'a> for InputSystem {
             thruster.rotation_control = input.axis_value(&Axis::Horizontal).unwrap();
             thruster.thrust_control = input.axis_value(&Axis::Vertical).unwrap();
         }
-
-        // loop through all weapons systems and assign firing states
-        // for (_, manager) in (&mut players, &mut managers).join() {
-        //     manager.wants_to_fire = input
-        //         .action_is_down(&Action::Fire)
-        //         .expect("Error reading action");
-        // }
     }
 }
