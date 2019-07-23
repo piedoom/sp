@@ -21,6 +21,7 @@ pub struct Body {
     angular_acceleration: f32,
     max_angular_velocity: Option<f32>,
     max_velocity: Option<f32>,
+    angular_damping: f32,
 }
 
 impl Body {
@@ -67,6 +68,8 @@ impl Body {
         // Calculate our positional and rotational velocity based on the time step
         self.velocity = self.velocity + (self.acceleration * delta_seconds);
         self.angular_velocity = self.angular_velocity + (self.angular_acceleration * delta_seconds);
+        self.angular_velocity = self.angular_velocity.signum() * ((self.angular_velocity().abs() - self.angular_damping) * delta_seconds);
+        dbg!(&self.angular_velocity);
         self
     }
 }
@@ -78,6 +81,7 @@ impl Default for Body {
             acceleration: Vector3::zeros(),
             angular_velocity: 0f32,
             angular_acceleration: 0f32,
+            angular_damping: 0.5f32,
             max_angular_velocity: None,
             max_velocity: None,
         }

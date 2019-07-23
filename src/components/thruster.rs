@@ -28,7 +28,7 @@ impl Default for Thruster {
         Self {
             rotation_control: 0f32,
             thrust_control: 0f32,
-            rotational_force: 0f32,
+            rotational_force: 1.0f32,
             thrust_force: 1.0f32,
             max_velocity: None,
         }

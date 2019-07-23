@@ -1,4 +1,4 @@
 (
   title: "sp",
-  dimensions: Some((1500, 1500)),
+  dimensions: Some((500, 500)),
 )

@@ -56,7 +56,7 @@ impl SimpleState for MainGameState {
             .build();
 
         let mut transform = Transform::default();
-        transform.set_translation_xyz(0.0, 30.0, 0.0);
+        transform.set_translation_xyz(0.0, 15.0, 0.0);
         transform.set_rotation_euler(-1.5707963, 0.0, 0.0);
         self.camera = Some(
             data.world
