@@ -2,9 +2,7 @@ use amethyst;
 
 use amethyst::{
     assets::{Handle, Prefab},
-    core::{
-        transform::Transform,
-    },
+    core::*,
     ecs::*,
     prelude::*,
     renderer::{
@@ -17,6 +15,7 @@ use crate::resources::prefabs::CharacterPrefabs;
 use crate::components::*;
 use crate::systems::*;
 
+use specs_physics::register_physics_systems;
 pub struct MainGameState {
     dispatcher: Dispatcher<'static, 'static>,
     camera: Option<Entity>,
@@ -25,12 +24,15 @@ pub struct MainGameState {
 impl MainGameState {
     pub fn new(_world: &mut World) -> Self {
         MainGameState {
-            dispatcher: DispatcherBuilder::new()
-            .with(InputSystem::default(), "input_system", &[])
-            .with(TrackerSystem::default(), "tracker_system", &[])
-            .with(PhysicsSystem::default(), "physics_system", &[])
-            .with(ThrusterSystem::default(), "thruster_system", &["physics_system"])
-            .build(),
+            dispatcher: {
+                let mut builder = DispatcherBuilder::new()
+                    .with(InputSystem::default(), "input_system", &[])
+                    .with(TrackerSystem::default(), "tracker_system", &[])
+                    .with(PhysicsSystem::default(), "physics_system", &[])
+                    .with(ThrusterSystem::default(), "thruster_system", &["physics_system"]);
+                register_physics_systems::<f32, Transform>(&mut builder);
+                builder.build()
+            },
             camera: None,
         }
     }

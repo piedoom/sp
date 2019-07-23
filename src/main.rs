@@ -5,8 +5,8 @@ use amethyst::{
     core::transform::TransformBundle,
     input::InputBundle,
     prelude::*,
-    renderer::{ 
-        types::DefaultBackend, 
+    renderer::{
+        types::DefaultBackend,
         RenderingSystem,
         visibility::VisibilitySortingSystem,
     }, 
