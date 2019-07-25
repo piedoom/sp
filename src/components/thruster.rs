@@ -20,7 +20,8 @@ pub struct Thruster {
     /// Scalar value that modifies over what time to apply a force
     pub thrust_force: f32,
     /// Limits the maximum magnitude of this thruster
-    pub max_velocity: Option<f32>,
+    pub max_speed: Option<f32>,
+    pub max_angular_speed: Option<f32>,
 }
 
 impl Default for Thruster {
@@ -28,9 +29,10 @@ impl Default for Thruster {
         Self {
             rotation_control: 0f32,
             thrust_control: 0f32,
-            rotational_force: 1.0f32,
-            thrust_force: 1.0f32,
-            max_velocity: None,
+            rotational_force: 200.0f32,
+            thrust_force: 400.0f32,
+            max_speed: Some(10f32),
+            max_angular_speed: Some(5f32),
         }
     }
 }

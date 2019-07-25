@@ -8,6 +8,7 @@ edition = "2018"
 amethyst = { git = "https://github.com/amethyst/amethyst", features = ["nightly", "vulkan", "gltf"] }
 specs-physics = { git =     "https://github.com/piedoom/specs-physics", branch = "amethyst-example" }
 serde = "*"
+nalgebra-glm = "*"
 
 [features]
 empty = ["amethyst/empty"]

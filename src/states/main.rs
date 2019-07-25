@@ -15,7 +15,14 @@ use crate::resources::prefabs::CharacterPrefabs;
 use crate::components::*;
 use crate::systems::*;
 
-use specs_physics::register_physics_systems;
+use specs_physics::{
+    colliders::Shape,
+    nalgebra::Vector3,
+    nphysics::{algebra::Velocity3, object::BodyStatus},
+    parameters::Gravity,
+    PhysicsBody, PhysicsBodyBuilder, PhysicsColliderBuilder,
+    register_physics_systems,
+};
 pub struct MainGameState {
     dispatcher: Dispatcher<'static, 'static>,
     camera: Option<Entity>,
@@ -28,8 +35,7 @@ impl MainGameState {
                 let mut builder = DispatcherBuilder::new()
                     .with(InputSystem::default(), "input_system", &[])
                     .with(TrackerSystem::default(), "tracker_system", &[])
-                    .with(PhysicsSystem::default(), "physics_system", &[])
-                    .with(ThrusterSystem::default(), "thruster_system", &["physics_system"]);
+                    .with(ThrusterSystem::default(), "thruster_system", &[]);
                 register_physics_systems::<f32, Transform>(&mut builder);
                 builder.build()
             },
@@ -53,7 +59,9 @@ impl SimpleState for MainGameState {
             .with(character_prefab.clone())
             .with(Transform::default())
             .with(Thruster::default())
-            .with(Body::default())
+            .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic)
+                .build())
+            .with(PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball{radius: 1f32}).build())
             .with(Player::default())
             .build();
 
@@ -71,7 +79,7 @@ impl SimpleState for MainGameState {
                     1000.0f32,
                 )))
                 .with(transform)
-                .with(Tracker::new(character))
+                //.with(Tracker::new(character))
                 .build(),
         );
     }
