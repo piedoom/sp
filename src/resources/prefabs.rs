@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::fs::read_dir;
 
+use super::GameResource;
 use crate::components::characters::CharacterPrefabData;
 use amethyst::{
     assets::{AssetStorage, Handle, Prefab, PrefabLoader, ProgressCounter, RonFormat},
     ecs::World,
     utils::application_root_dir,
 };
-
 
 #[derive(Default)]
 pub struct CharacterPrefabs {
@@ -36,16 +36,8 @@ impl CharacterPrefabs {
     }
 }
 
-fn make_name(subdirectory: &str, entry: &std::fs::DirEntry) -> String {
-    let path_buffer = entry.path();
-    let filename = path_buffer.file_name().unwrap();
-    format!("{}{}", subdirectory, filename.to_str().unwrap())
-}
-
-pub fn initialize_prefabs(world: &mut World) -> ProgressCounter {
-    let mut progress_counter = ProgressCounter::new();
-    // load character prefabs
-    {
+impl GameResource for CharacterPrefabs {
+    fn initialize(world: &mut World, progress_counter: &mut ProgressCounter) {
         let prefab_iter = {
             let prefab_dir_path = application_root_dir()
                 .unwrap()
@@ -59,7 +51,7 @@ pub fn initialize_prefabs(world: &mut World) -> ProgressCounter {
                     loader.load(
                         make_name("prefabs/characters/", &prefab_dir_entry.unwrap()),
                         RonFormat,
-                        &mut progress_counter,
+                        &mut *progress_counter,
                     )
                 })
             })
@@ -71,8 +63,12 @@ pub fn initialize_prefabs(world: &mut World) -> ProgressCounter {
         }
         world.add_resource(character_prefabs);
     }
+}
 
-    progress_counter
+fn make_name(subdirectory: &str, entry: &std::fs::DirEntry) -> String {
+    let path_buffer = entry.path();
+    let filename = path_buffer.file_name().unwrap();
+    format!("{}{}", subdirectory, filename.to_str().unwrap())
 }
 
 // Once the prefabs are loaded, this function is called to update the ekeys in the CharacterPrefabs struct.

@@ -24,6 +24,26 @@ pub struct Thruster {
     pub max_angular_speed: Option<f32>,
 }
 
+/// A Thruster component with some fields omitted for easier construction in a prefab
+struct ThrusterPrefab {
+    torque: f32,
+    thrust: f32,
+    speed: Option<f32>,
+    angular_speed: Option<f32>,
+}
+
+impl From<ThrusterPrefab> for Thruster {
+    fn from(p: ThrusterPrefab) -> Thruster {
+        Thruster {
+            rotational_force: p.torque,
+            thrust_force: p.thrust,
+            max_speed: p.speed,
+            max_angular_speed: p.angular_speed,
+            ..Default::default()
+        }
+    }
+}
+
 impl Default for Thruster {
     fn default() -> Self {
         Self {
@@ -40,4 +60,3 @@ impl Default for Thruster {
 impl Component for Thruster {
     type Storage = DenseVecStorage<Self>;
 }
-

@@ -1,7 +1,4 @@
-use amethyst::{
-    ecs::prelude::*,
-    core::math::Vector3,
-};
+use amethyst::{core::math::Vector3, ecs::prelude::*};
 
 /// Essentially a Parent definition, except this one will mirror the Parent's translation only - no rotation.
 #[derive(Clone, Default)]

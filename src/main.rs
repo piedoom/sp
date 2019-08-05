@@ -1,15 +1,11 @@
 use amethyst::assets::PrefabLoaderSystem;
 use amethyst::{
-    gltf::GltfSceneLoaderSystem,
     core::frame_limiter::FrameRateLimitStrategy,
     core::transform::TransformBundle,
+    gltf::GltfSceneLoaderSystem,
     input::InputBundle,
     prelude::*,
-    renderer::{
-        types::DefaultBackend,
-        RenderingSystem,
-        visibility::VisibilitySortingSystem,
-    }, 
+    renderer::{types::DefaultBackend, visibility::VisibilitySortingSystem, RenderingSystem},
     utils::application_root_dir,
     window::WindowBundle,
 };
@@ -18,12 +14,12 @@ mod components;
 mod rendering;
 mod resources;
 mod states;
-mod util;
 mod systems;
+mod util;
 
 use components as c;
-use util::GameBindings;
 use rendering::RenderGraph;
+use util::GameBindings;
 
 fn main() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

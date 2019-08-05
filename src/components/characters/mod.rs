@@ -1,10 +1,15 @@
+mod quartz;
+
+pub use quartz::Quartz;
+
 use amethyst::{
-    assets::{PrefabData, ProgressCounter, AssetPrefab},
+    assets::{AssetPrefab, PrefabData, ProgressCounter},
     core::Named,
     derive::PrefabData,
-    ecs::Entity,
-    Error,
+    ecs::prelude::*,
+    ecs::world::LazyUpdate,
     gltf::{GltfSceneAsset, GltfSceneFormat},
+    Error,
 };
 
 use crate::components::*;
@@ -18,4 +23,8 @@ pub struct CharacterPrefabData {
     pub name: Option<Named>,
     gltf: Option<AssetPrefab<GltfSceneAsset, GltfSceneFormat>>,
     thruster: Option<Thruster>,
+}
+
+pub trait Character {
+    fn attack(&mut self, world: &mut World) -> Entity;
 }

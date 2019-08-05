@@ -5,14 +5,13 @@ use amethyst::{
     core::*,
     ecs::*,
     prelude::*,
-    renderer::{
-        camera::{Camera, Projection},
-    },
+    renderer::camera::{Camera, Projection},
     window::ScreenDimensions,
 };
 
-use crate::resources::prefabs::CharacterPrefabs;
+use crate::components::characters::*;
 use crate::components::*;
+use crate::resources::prefabs::CharacterPrefabs;
 use crate::systems::*;
 
 use specs_physics::{
@@ -20,8 +19,7 @@ use specs_physics::{
     nalgebra::Vector3,
     nphysics::{algebra::Velocity3, object::BodyStatus},
     parameters::Gravity,
-    PhysicsBody, PhysicsBodyBuilder, PhysicsColliderBuilder,
-    register_physics_systems,
+    register_physics_systems, PhysicsBody, PhysicsBodyBuilder, PhysicsColliderBuilder,
 };
 pub struct MainGameState {
     dispatcher: Dispatcher<'static, 'static>,
@@ -54,17 +52,12 @@ impl SimpleState for MainGameState {
             (dim.width(), dim.height())
         };
 
-        let character_prefab = get_character_prefab(data.world, "default");
-        let character = data.world.create_entity()
-            .with(character_prefab.clone())
-            .with(Transform::default())
-            .with(Thruster::default())
-            .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic)
-                .build())
-            .with(PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball{radius: 1f32}).build())
+        // register components that do not have systems
+        self.register_characters(data.world);
+
+        let character = build_character(data.world, "quartz")
             .with(Player::default())
             .build();
-
         let mut transform = Transform::default();
         transform.set_translation_xyz(0.0, 15.0, 0.0);
         transform.set_rotation_euler(-1.5707963, 0.0, 0.0);
@@ -91,11 +84,38 @@ impl SimpleState for MainGameState {
     }
 }
 
-pub fn get_character_prefab(world: &mut World, key: &str) -> Handle<Prefab<crate::components::characters::CharacterPrefabData>> {
+pub fn get_character_prefab(
+    world: &mut World,
+    key: &str,
+) -> Handle<Prefab<crate::components::characters::CharacterPrefabData>> {
     world.exec(|prefab_store: ReadExpect<CharacterPrefabs>| {
         prefab_store
             .get_prefab(key)
             .expect(&format!("Getting prefab with key {} failed.", key))
             .clone()
     })
+}
+
+pub fn build_character<'a>(world: &'a mut World, key: &str) -> EntityBuilder<'a> {
+    let character_prefab = get_character_prefab(world, key);
+    world
+        .create_entity()
+        .with(character_prefab.clone())
+        .with(Transform::default())
+        .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic).build())
+        .with(PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball { radius: 1f32 }).build())
+        .with(get_character_component(key))
+}
+
+pub fn get_character_component(key: &str) -> impl Component {
+    match key {
+        "quartz" => Quartz::default(),
+        _ => unreachable!(),
+    }
+}
+
+impl MainGameState {
+    fn register_characters(&self, world: &mut World) {
+        world.register::<Quartz>();
+    }
 }

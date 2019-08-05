@@ -1,9 +1,7 @@
-mod thruster;
 mod input;
+mod thruster;
 mod tracker;
-mod physics;
 
-pub use thruster::ThrusterSystem;
 pub use input::InputSystem;
+pub use thruster::ThrusterSystem;
 pub use tracker::TrackerSystem;
-pub use physics::PhysicsSystem;

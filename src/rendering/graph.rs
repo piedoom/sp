@@ -2,10 +2,7 @@ use amethyst::{
     ecs::{ReadExpect, Resources, SystemData},
     renderer::{
         palette::Srgb,
-        pass::{
-            DrawDebugLinesDesc, DrawPbrDesc,
-            DrawPbrTransparentDesc, DrawSkyboxDesc,
-        },
+        pass::{DrawDebugLinesDesc, DrawPbrDesc, DrawPbrTransparentDesc, DrawSkyboxDesc},
         rendy::{
             factory::Factory,
             graph::{

@@ -1,0 +1,18 @@
+    
+#![enable(implicit_some)]
+Prefab (
+    entities: [
+        (
+            data: (
+                name: Named(name: "quartz"),
+                gltf: File("models/ship.gltf", ()),
+                thruster: Thruster(
+                    torque: 100.0,
+                    thrust: 200.0,
+                    speed: 12.0,
+                    angular_speed: 4.0,
+                ),
+            ),
+        ),
+    ],
+)
