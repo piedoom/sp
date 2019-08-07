@@ -32,7 +32,8 @@ impl MainGameState {
                 let mut builder = DispatcherBuilder::new()
                     .with(InputSystem::default(), "input_system", &[])
                     .with(TrackerSystem::default(), "tracker_system", &[])
-                    .with(ThrusterSystem::default(), "thruster_system", &[]);
+                    .with(ThrusterSystem::default(), "thruster_system", &[])
+                    .with(CharacterSystem::default(), "character_system", &[]);
                 register_physics_systems::<f32, Transform>(&mut builder);
                 builder.build()
             },
@@ -103,6 +104,7 @@ pub fn build_character<'a>(world: &'a mut World, key: &str) -> EntityBuilder<'a>
         .with(Transform::default())
         .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic).build())
         .with(PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball { radius: 1f32 }).build())
+        .with(CharacterState::default())
         .with(get_character_component(key))
 }
 

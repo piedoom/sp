@@ -29,6 +29,7 @@ impl Component for Character {
     type Storage = DenseVecStorage<Self>;
 }
 
+#[derive(Default)]
 pub struct CharacterState {
     pub attack: bool,
 }
