@@ -9,7 +9,6 @@ use amethyst::{
     window::ScreenDimensions,
 };
 
-use crate::components::characters::*;
 use crate::components::*;
 use crate::resources::prefabs::CharacterPrefabs;
 use crate::systems::*;
@@ -53,7 +52,7 @@ impl SimpleState for MainGameState {
         };
 
         // register components that do not have systems
-        self.register_characters(data.world);
+        data.world.register::<Character>();
 
         let character = build_character(data.world, "quartz")
             .with(Player::default())
@@ -87,7 +86,7 @@ impl SimpleState for MainGameState {
 pub fn get_character_prefab(
     world: &mut World,
     key: &str,
-) -> Handle<Prefab<crate::components::characters::CharacterPrefabData>> {
+) -> Handle<Prefab<crate::components::CharacterPrefabData>> {
     world.exec(|prefab_store: ReadExpect<CharacterPrefabs>| {
         prefab_store
             .get_prefab(key)
@@ -109,13 +108,7 @@ pub fn build_character<'a>(world: &'a mut World, key: &str) -> EntityBuilder<'a>
 
 pub fn get_character_component(key: &str) -> impl Component {
     match key {
-        "quartz" => Quartz::default(),
+        "quartz" => Character::Quartz,
         _ => unreachable!(),
-    }
-}
-
-impl MainGameState {
-    fn register_characters(&self, world: &mut World) {
-        world.register::<Quartz>();
     }
 }

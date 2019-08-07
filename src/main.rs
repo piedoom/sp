@@ -43,7 +43,7 @@ fn main() -> amethyst::Result<()> {
         )?
         .with_bundle(TransformBundle::new())?
         .with(
-            PrefabLoaderSystem::<c::characters::CharacterPrefabData>::default(),
+            PrefabLoaderSystem::<c::CharacterPrefabData>::default(),
             "character_prefab_loader",
             &[],
         )

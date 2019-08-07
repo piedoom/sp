@@ -1,7 +1,3 @@
-mod quartz;
-
-pub use quartz::Quartz;
-
 use amethyst::{
     assets::{AssetPrefab, PrefabData, ProgressCounter},
     core::Named,
@@ -25,6 +21,18 @@ pub struct CharacterPrefabData {
     thruster: Option<Thruster>,
 }
 
-pub trait Character {
-    fn attack(&mut self, world: &mut World) -> Entity;
+pub enum Character {
+    Quartz,
+}
+
+impl Component for Character {
+    type Storage = DenseVecStorage<Self>;
+}
+
+pub struct CharacterState {
+    pub attack: bool,
+}
+
+impl Component for CharacterState {
+    type Storage = DenseVecStorage<Self>;
 }

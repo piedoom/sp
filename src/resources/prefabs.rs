@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::read_dir;
 
 use super::GameResource;
-use crate::components::characters::CharacterPrefabData;
+use crate::components::CharacterPrefabData;
 use amethyst::{
     assets::{AssetStorage, Handle, Prefab, PrefabLoader, ProgressCounter, RonFormat},
     ecs::World,

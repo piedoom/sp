@@ -1,7 +1,7 @@
-use crate::components::{characters::Character, Player, Thruster};
-use crate::util::{Axis, GameBindings};
+use crate::components::*;
+use crate::util::{Action, Axis, GameBindings};
 use amethyst::core::Time;
-use amethyst::ecs::{Join, Read, System, WriteStorage};
+use amethyst::ecs::prelude::*;
 use amethyst::input::InputHandler;
 
 #[derive(Default, Debug)]
@@ -11,12 +11,16 @@ impl<'a> System<'a> for InputSystem {
     type SystemData = (
         WriteStorage<'a, Player>,
         WriteStorage<'a, Thruster>,
-        WriteStorage<'a, Character>,
+        ReadStorage<'a, Character>,
+        WriteStorage<'a, CharacterState>,
         Read<'a, InputHandler<GameBindings>>,
         Read<'a, Time>,
     );
 
-    fn run(&mut self, (mut players, mut thrusters, mut characters, input, time): Self::SystemData) {
+    fn run(
+        &mut self,
+        (mut players, mut thrusters, characters, mut states, input, time): Self::SystemData,
+    ) {
         // Loop through all players and assign direction
         for (thruster, _) in (&mut thrusters, &mut players).join() {
             thruster.rotation_control = input.axis_value(&Axis::Horizontal).unwrap();
@@ -24,8 +28,10 @@ impl<'a> System<'a> for InputSystem {
         }
 
         // Assign a firing state to any player that is attached to a character
-        for (character, _) in (&mut characters, &mut players).join() {
-            character.fire()
+        for (state, _, _) in (&mut states, &characters, &mut players).join() {
+            state.attack = input
+                .action_is_down(&Action::Fire)
+                .expect("Error reading action");
         }
     }
 }
