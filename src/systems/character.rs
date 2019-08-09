@@ -1,7 +1,7 @@
 use crate::{components::*, resources::*};
-use amethyst::core::{ecs::prelude::*, Time};
+use amethyst::core::{ecs::prelude::*, Time, Transform, math::Vector3};
 use specs_physics::{
-    colliders::Shape, nphysics::object::BodyStatus, PhysicsBodyBuilder, PhysicsColliderBuilder,
+    colliders::Shape, nphysics::{object::BodyStatus, algebra::Velocity3}, PhysicsBodyBuilder, PhysicsColliderBuilder,
 };
 
 #[derive(Default, Debug)]
@@ -11,8 +11,9 @@ impl<'a> System<'a> for CharacterSystem {
     type SystemData = (
         Entities<'a>,
         WriteStorage<'a, Character>,
-        WriteStorage<'a, CharacterState>,
-        Read<'a, Time>,
+        WriteStorage<'a, CharacterData>,
+        ReadStorage<'a, Transform>,
+        ReadExpect<'a, Time>,
         Read<'a, LazyUpdate>,
         ReadExpect<'a, PrimitiveResource>,
         ReadExpect<'a, MaterialResource>,
@@ -20,26 +21,33 @@ impl<'a> System<'a> for CharacterSystem {
 
     fn run(
         &mut self,
-        (entities, mut characters, mut states, time, lazy, primitives, materials): Self::SystemData,
+        (entities, mut characters, mut datas, transforms, time, lazy, primitives, materials): Self::SystemData,
     ) {
         // Loop through all players and assign direction
-        for (character, state) in (&mut characters, &mut states).join() {
+        for (character, data, transform) in (&mut characters, &mut datas, &transforms).join() {
+            let mut ptransform = transform.clone();
+            ptransform.set_scale(Vector3::new(1f32,1f32,1f32).scale(0.1));
+            // get the direction of the player
+            let direction = transform.rotation() * Vector3::z();
             match character {
                 // Quartz Character logic
                 Character::Quartz => {
-                    if state.attack {
-                        println!("firing");
-                        lazy.create_entity(&entities)
-                            .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic).build())
-                            .with(
-                                PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball {
-                                    radius: 1f32,
-                                })
-                                .build(),
-                            )
-                            .with(primitives.sphere())
-                            // .with(materials.clone())
-                            .build();
+                    if data.attack {
+                        match data.basic_attack_timer.check_and_reset(&time.absolute_time()) {
+                            timer::TimerStatus::Complete(_) => {
+                                lazy.create_entity(&entities)
+                                    .with(
+                                        PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic)
+                                        .velocity(Velocity3::new(direction.scale(data.basic_attack_speed), Vector3::zeros()))
+                                        .build())
+                                    .with(primitives.sphere())
+                                    .with(lifetime::DistanceLimit::new(transform.translation().clone(), data.basic_attack_range))
+                                    .with(ptransform)
+                                    .with(materials.diffuse_white.clone().unwrap())
+                                    .build();
+                            },
+                            _ => ()
+                        }
                     }
                 }
             }

@@ -12,14 +12,14 @@ impl<'a> System<'a> for InputSystem {
         WriteStorage<'a, Player>,
         WriteStorage<'a, Thruster>,
         ReadStorage<'a, Character>,
-        WriteStorage<'a, CharacterState>,
+        WriteStorage<'a, CharacterData>,
         Read<'a, InputHandler<GameBindings>>,
         Read<'a, Time>,
     );
 
     fn run(
         &mut self,
-        (mut players, mut thrusters, characters, mut states, input, time): Self::SystemData,
+        (mut players, mut thrusters, characters, mut datas, input, time): Self::SystemData,
     ) {
         // Loop through all players and assign direction
         for (thruster, _) in (&mut thrusters, &mut players).join() {
@@ -28,8 +28,8 @@ impl<'a> System<'a> for InputSystem {
         }
 
         // Assign a firing state to any player that is attached to a character
-        for (state, _, _) in (&mut states, &characters, &mut players).join() {
-            state.attack = input
+        for (data, _, _) in (&mut datas, &characters, &mut players).join() {
+            data.attack = input
                 .action_is_down(&Action::Fire)
                 .expect("Error reading action");
         }

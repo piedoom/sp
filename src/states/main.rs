@@ -5,7 +5,10 @@ use amethyst::{
     core::*,
     ecs::*,
     prelude::*,
-    renderer::camera::{Camera, Projection},
+    renderer::{
+        light::{Light, PointLight},
+        camera::{Camera, Projection},
+    },
     window::ScreenDimensions,
 };
 
@@ -33,7 +36,8 @@ impl MainGameState {
                     .with(InputSystem::default(), "input_system", &[])
                     .with(TrackerSystem::default(), "tracker_system", &[])
                     .with(ThrusterSystem::default(), "thruster_system", &[])
-                    .with(CharacterSystem::default(), "character_system", &[]);
+                    .with(CharacterSystem::default(), "character_system", &[])
+                    .with(LifetimeSystem::default(), "lifetime_system", &[]);
                 register_physics_systems::<f32, Transform>(&mut builder);
                 builder.build()
             },
@@ -71,10 +75,20 @@ impl SimpleState for MainGameState {
                     0.01f32,
                     1000.0f32,
                 )))
-                .with(transform)
+                .with(transform.clone())
                 //.with(Tracker::new(character))
                 .build(),
         );
+        // add a light
+        let light: Light = PointLight {
+            intensity: 6.0,
+            ..PointLight::default()
+        }.into();
+        transform.set_translation_xyz(0.0, 10.0, 0.0);
+        data.world
+            .create_entity()
+            .with(light)
+            .with(transform.clone()).build();
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
@@ -104,7 +118,6 @@ pub fn build_character<'a>(world: &'a mut World, key: &str) -> EntityBuilder<'a>
         .with(Transform::default())
         .with(PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic).build())
         .with(PhysicsColliderBuilder::<f32>::from(Shape::<f32>::Ball { radius: 1f32 }).build())
-        .with(CharacterState::default())
         .with(get_character_component(key))
 }
 

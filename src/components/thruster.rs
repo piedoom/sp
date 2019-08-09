@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 /// Thrusters are basic physics controllers that simulate a constant force on a body in any direction
 #[derive(Clone, Deserialize, Serialize, PrefabData)]
-#[serde(default)]
+#[serde(default, deny_unknown_fields)]
 #[prefab(Component)]
 pub struct Thruster {
     /// A anormalized value that controls the rotation
@@ -25,7 +25,9 @@ pub struct Thruster {
 }
 
 /// A Thruster component with some fields omitted for easier construction in a prefab
-struct ThrusterPrefab {
+#[derive(Clone, Copy, Deserialize, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ThrusterPrefab {
     torque: f32,
     thrust: f32,
     speed: Option<f32>,
@@ -41,6 +43,22 @@ impl From<ThrusterPrefab> for Thruster {
             max_angular_speed: p.angular_speed,
             ..Default::default()
         }
+    }
+}
+
+impl<'a> PrefabData<'a> for ThrusterPrefab {
+    type SystemData = WriteStorage<'a, Thruster>;
+    type Result = ();
+    fn add_to_entity(
+        &self,
+        entity: Entity,
+        thrusters: &mut Self::SystemData,
+        _entities: &[Entity],
+        _children: &[Entity],
+    ) -> Result<(), Error> {
+        let thruster = Into::<Thruster>::into(*self);
+        thrusters.insert(entity, thruster).map(|_| ())?;
+        Ok(())
     }
 }
 

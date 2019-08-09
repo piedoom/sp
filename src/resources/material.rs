@@ -13,6 +13,7 @@ use super::GameResource;
 #[derive(Default)]
 pub struct MaterialResource {
     default_material: Option<Material>,
+    pub diffuse_white: Option<Handle<Material>>,
 }
 
 impl GameResource for MaterialResource {
@@ -20,6 +21,8 @@ impl GameResource for MaterialResource {
         let mut mr = Self::default();
         // Get the resource for the material defaults
         mr.default_material = Some(world.read_resource::<MaterialDefaults>().0.clone());
+        // Set the white material
+        mr.diffuse_white = Some(mr.generate_material(world, LinSrgba::new(1.0,1.0,1.0,1.0)));
         world.add_resource::<MaterialResource>(mr);
     }
 }
