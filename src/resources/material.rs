@@ -22,7 +22,7 @@ impl GameResource for MaterialResource {
         // Get the resource for the material defaults
         mr.default_material = Some(world.read_resource::<MaterialDefaults>().0.clone());
         // Set the white material
-        mr.diffuse_white = Some(mr.generate_material(world, LinSrgba::new(1.0,1.0,1.0,1.0)));
+        mr.diffuse_white = Some(mr.generate_material(world, LinSrgba::new(1.0, 1.0, 1.0, 1.0)));
         world.add_resource::<MaterialResource>(mr);
     }
 }

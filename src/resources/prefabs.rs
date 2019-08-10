@@ -77,8 +77,7 @@ pub fn update_prefabs(world: &mut World) {
     let updated_prefabs = {
         let character_prefabs = world.read_resource::<CharacterPrefabs>();
         let prefabs = character_prefabs.get_prefabs();
-        let mut prefab_resource =
-            world.write_resource::<AssetStorage<Prefab<CharacterPrefab>>>();
+        let mut prefab_resource = world.write_resource::<AssetStorage<Prefab<CharacterPrefab>>>();
         let mut new_prefabs = HashMap::new();
         for (_key, handle) in prefabs.iter() {
             if let Some(prefab) = prefab_resource.get_mut(handle) {

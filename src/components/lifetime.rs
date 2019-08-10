@@ -1,7 +1,4 @@
-use amethyst::{
-    ecs::prelude::*,
-    core::math::Vector3,
-};
+use amethyst::{core::math::Vector3, ecs::prelude::*};
 
 pub struct DistanceLimit {
     starting_position: Vector3<f32>,

@@ -6,8 +6,8 @@ use amethyst::{
     ecs::*,
     prelude::*,
     renderer::{
-        light::{Light, PointLight},
         camera::{Camera, Projection},
+        light::{Light, PointLight},
     },
     window::ScreenDimensions,
 };
@@ -83,12 +83,14 @@ impl SimpleState for MainGameState {
         let light: Light = PointLight {
             intensity: 6.0,
             ..PointLight::default()
-        }.into();
+        }
+        .into();
         transform.set_translation_xyz(0.0, 10.0, 0.0);
         data.world
             .create_entity()
             .with(light)
-            .with(transform.clone()).build();
+            .with(transform.clone())
+            .build();
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {

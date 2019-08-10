@@ -2,7 +2,7 @@
 //! time or distance limits.
 
 use amethyst::{
-    core::{Transform, Time},
+    core::{Time, Transform},
     ecs::prelude::*,
 };
 

@@ -1,7 +1,9 @@
 use crate::{components::*, resources::*};
-use amethyst::core::{ecs::prelude::*, Time, Transform, math::Vector3};
+use amethyst::core::{ecs::prelude::*, math::Vector3, Time, Transform};
 use specs_physics::{
-    colliders::Shape, nphysics::{object::BodyStatus, algebra::Velocity3}, PhysicsBodyBuilder, PhysicsColliderBuilder,
+    colliders::Shape,
+    nphysics::{algebra::Velocity3, object::BodyStatus},
+    PhysicsBodyBuilder, PhysicsColliderBuilder,
 };
 
 #[derive(Default, Debug)]
@@ -26,27 +28,37 @@ impl<'a> System<'a> for CharacterSystem {
         // Loop through all players and assign direction
         for (character, data, transform) in (&mut characters, &mut datas, &transforms).join() {
             let mut ptransform = transform.clone();
-            ptransform.set_scale(Vector3::new(1f32,1f32,1f32).scale(0.1));
+            ptransform.set_scale(Vector3::new(1f32, 1f32, 1f32).scale(0.1));
             // get the direction of the player
             let direction = transform.rotation() * Vector3::z();
             match character {
                 // Quartz Character logic
                 Character::Quartz => {
                     if data.attack {
-                        match data.basic_attack_timer.check_and_reset(&time.absolute_time()) {
+                        match data
+                            .basic_attack_timer
+                            .check_and_reset(&time.absolute_time())
+                        {
                             timer::TimerStatus::Complete(_) => {
                                 lazy.create_entity(&entities)
                                     .with(
                                         PhysicsBodyBuilder::<f32>::from(BodyStatus::Dynamic)
-                                        .velocity(Velocity3::new(direction.scale(data.basic_attack_speed), Vector3::zeros()))
-                                        .build())
+                                            .velocity(Velocity3::new(
+                                                direction.scale(data.basic_attack_speed),
+                                                Vector3::zeros(),
+                                            ))
+                                            .build(),
+                                    )
                                     .with(primitives.sphere())
-                                    .with(lifetime::DistanceLimit::new(transform.translation().clone(), data.basic_attack_range))
+                                    .with(lifetime::DistanceLimit::new(
+                                        transform.translation().clone(),
+                                        data.basic_attack_range,
+                                    ))
                                     .with(ptransform)
                                     .with(materials.diffuse_white.clone().unwrap())
                                     .build();
-                            },
-                            _ => ()
+                            }
+                            _ => (),
                         }
                     }
                 }

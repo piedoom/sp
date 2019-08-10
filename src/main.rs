@@ -22,13 +22,13 @@ use rendering::RenderGraph;
 use util::GameBindings;
 
 fn main() -> amethyst::Result<()> {
-
     amethyst::Logger::from_config(amethyst::LoggerConfig {
         stdout: amethyst::StdoutLog::Off,
         log_file: Some("game.log".into()),
         level_filter: amethyst::LogLevelFilter::Error,
         ..Default::default()
-    }).start();
+    })
+    .start();
 
     let resources = application_root_dir()
         .unwrap()

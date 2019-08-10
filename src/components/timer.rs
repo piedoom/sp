@@ -1,8 +1,4 @@
-use std::{
-    time::Duration,
-    collections::HashMap,
-    hash::Hash,
-};
+use std::{collections::HashMap, hash::Hash, time::Duration};
 
 use amethyst::ecs::{Component, DenseVecStorage};
 use serde::{Deserialize, Serialize};
@@ -75,18 +71,27 @@ mod tests {
     fn incomplete_timer() {
         // timer will be complete at 15 seconds duration
         let t = generate(5, 10);
-        assert_eq!(t.check(&Duration::from_secs(10)), TimerStatus::Incomplete(Duration::from_secs(5)));
+        assert_eq!(
+            t.check(&Duration::from_secs(10)),
+            TimerStatus::Incomplete(Duration::from_secs(5))
+        );
     }
 
     #[test]
     fn complete_timer() {
         let t = generate(5, 10);
-        assert_eq!(t.check(&Duration::from_secs(20)), TimerStatus::Complete(Duration::from_secs(5)));
+        assert_eq!(
+            t.check(&Duration::from_secs(20)),
+            TimerStatus::Complete(Duration::from_secs(5))
+        );
     }
 
     #[test]
     fn just_complete_timer() {
         let t = generate(5, 10);
-        assert_eq!(t.check(&Duration::from_secs(15)), TimerStatus::Complete(Duration::from_secs(0)));
+        assert_eq!(
+            t.check(&Duration::from_secs(15)),
+            TimerStatus::Complete(Duration::from_secs(0))
+        );
     }
 }
