@@ -101,7 +101,7 @@ impl SimpleState for MainGameState {
 pub fn get_character_prefab(
     world: &mut World,
     key: &str,
-) -> Handle<Prefab<crate::components::CharacterPrefabData>> {
+) -> Handle<Prefab<crate::components::CharacterPrefab>> {
     world.exec(|prefab_store: ReadExpect<CharacterPrefabs>| {
         prefab_store
             .get_prefab(key)

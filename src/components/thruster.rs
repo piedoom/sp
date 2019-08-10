@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 /// Thrusters are basic physics controllers that simulate a constant force on a body in any direction
 #[derive(Clone, Deserialize, Serialize, PrefabData)]
 #[serde(default, deny_unknown_fields)]
+#[serde(from = "ThrusterPrefab", into = "Thruster")]
 #[prefab(Component)]
 pub struct Thruster {
     /// A anormalized value that controls the rotation

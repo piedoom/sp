@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 use std::fs::read_dir;
 
-use crate::components::CharacterPrefabData;
+use crate::components::CharacterPrefab;
 use amethyst::{
     assets::{AssetLoaderSystemData, Handle, ProgressCounter},
     ecs::World,

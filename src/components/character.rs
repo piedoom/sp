@@ -11,17 +11,18 @@ use amethyst::{
 use crate::components::*;
 use serde::{Deserialize, Serialize};
 
-// This is the main prefab data for characters.
+/// The main prefab data for characters.
 #[derive(Default, Deserialize, Serialize, PrefabData)]
 #[serde(default)]
 #[serde(deny_unknown_fields)]
-pub struct CharacterPrefabData {
+pub struct CharacterPrefab {
     pub name: Option<Named>,
     gltf: Option<AssetPrefab<GltfSceneAsset, GltfSceneFormat>>,
     thruster: Option<Thruster>,
     settings: Option<CharacterData>,
 }
 
+/// An enumeration type used for match statements
 pub enum Character {
     Quartz,
 }
@@ -32,6 +33,7 @@ impl Component for Character {
 
 #[derive(Clone, Default, Deserialize, Serialize, PrefabData)]
 #[serde(default, deny_unknown_fields)]
+#[serde(from = "CharacterDataPrefab", into = "CharacterData")]
 #[prefab(Component)]
 pub struct CharacterData {
     /// The speed at which projectiles from a basic attack move
@@ -45,6 +47,8 @@ pub struct CharacterData {
 }
 
 /// A CharacterData component with some fields omitted for easier construction in a prefab
+#[derive(Clone, Copy, Deserialize, PartialEq, Serialize)]
+#[serde(deny_unknown_fields)]
 struct CharacterDataPrefab {
     basic_attack_speed: f32,
     basic_attack_range: f32,
@@ -63,8 +67,22 @@ impl From<CharacterDataPrefab> for CharacterData {
     }
 }
 
+impl<'a> PrefabData<'a> for CharacterDataPrefab {
+    type SystemData = WriteStorage<'a, CharacterData>;
+    type Result = ();
+    fn add_to_entity(
+        &self,
+        entity: Entity,
+        character_datas: &mut Self::SystemData,
+        _entities: &[Entity],
+        _children: &[Entity],
+    ) -> Result<(), Error> {
+        let character_data = Into::<CharacterData>::into(*self);
+        character_datas.insert(entity, character_data).map(|_| ())?;
+        Ok(())
+    }
+}
 
 impl Component for CharacterData {
     type Storage = DenseVecStorage<Self>;
 }
-

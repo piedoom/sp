@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::read_dir;
 
 use super::GameResource;
-use crate::components::CharacterPrefabData;
+use crate::components::CharacterPrefab;
 use amethyst::{
     assets::{AssetStorage, Handle, Prefab, PrefabLoader, ProgressCounter, RonFormat},
     ecs::World,
@@ -11,27 +11,27 @@ use amethyst::{
 
 #[derive(Default)]
 pub struct CharacterPrefabs {
-    prefabs: HashMap<String, Handle<Prefab<CharacterPrefabData>>>,
+    prefabs: HashMap<String, Handle<Prefab<CharacterPrefab>>>,
 }
 
 impl CharacterPrefabs {
     pub fn insert(
         &mut self,
         character_name: String,
-        prefab_handle: Handle<Prefab<CharacterPrefabData>>,
+        prefab_handle: Handle<Prefab<CharacterPrefab>>,
     ) {
         self.prefabs.insert(character_name, prefab_handle);
     }
 
-    pub fn get_prefab(&self, name: &str) -> Option<&Handle<Prefab<CharacterPrefabData>>> {
+    pub fn get_prefab(&self, name: &str) -> Option<&Handle<Prefab<CharacterPrefab>>> {
         self.prefabs.get(name)
     }
 
-    pub fn get_prefabs(&self) -> &HashMap<String, Handle<Prefab<CharacterPrefabData>>> {
+    pub fn get_prefabs(&self) -> &HashMap<String, Handle<Prefab<CharacterPrefab>>> {
         &self.prefabs
     }
 
-    pub fn set_prefabs(&mut self, prefabs: HashMap<String, Handle<Prefab<CharacterPrefabData>>>) {
+    pub fn set_prefabs(&mut self, prefabs: HashMap<String, Handle<Prefab<CharacterPrefab>>>) {
         self.prefabs = prefabs;
     }
 }
@@ -47,7 +47,7 @@ impl GameResource for CharacterPrefabs {
                 + "/resources/prefabs/characters";
             let prefab_iter = read_dir(prefab_dir_path).unwrap();
             prefab_iter.map(|prefab_dir_entry| {
-                world.exec(|loader: PrefabLoader<'_, CharacterPrefabData>| {
+                world.exec(|loader: PrefabLoader<'_, CharacterPrefab>| {
                     loader.load(
                         make_name("prefabs/characters/", &prefab_dir_entry.unwrap()),
                         RonFormat,
@@ -78,7 +78,7 @@ pub fn update_prefabs(world: &mut World) {
         let character_prefabs = world.read_resource::<CharacterPrefabs>();
         let prefabs = character_prefabs.get_prefabs();
         let mut prefab_resource =
-            world.write_resource::<AssetStorage<Prefab<CharacterPrefabData>>>();
+            world.write_resource::<AssetStorage<Prefab<CharacterPrefab>>>();
         let mut new_prefabs = HashMap::new();
         for (_key, handle) in prefabs.iter() {
             if let Some(prefab) = prefab_resource.get_mut(handle) {
